@@ -83,16 +83,27 @@
       <!-- 装飾用背景色 -->
       <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-600 via-green-400 to-green-600"></div>
 
-      <h2 class="text-3xl md:text-4xl font-black mb-4 mt-2">暇じゃない暇人のマイクラサーバー（仮）へようこそ！</h2>
-      <p class="text-gray-300 mb-8 max-w-xl mx-auto">
-        認証に成功すると、参加するためのアドレスが表示されます。
+      <!-- 改善1: タイトルのメリハリ強化 -->
+      <h2 class="text-3xl md:text-5xl font-black mb-6 mt-4 tracking-tight">
+        <span class="block text-green-400 mb-2 text-lg md:text-xl tracking-widest font-bold">WELCOME TO OFFICIAL WEBSITE</span>
+        暇じゃない暇人の<br class="sm:hidden">マイクラサーバー<span class="text-2xl text-gray-500 font-bold">（仮）</span>
+      </h2>
+      
+      <!-- 改善3: 説明文を少し親しみやすく具体的に -->
+      <p class="text-gray-300 mb-8 max-w-xl mx-auto leading-relaxed">
+        当サーバーはJava版・統合版のどちらからでも参加可能です！<br>
+        BOT対策のため、下のチェックボックスから人間であることを証明して、サーバーアドレスを取得してください。
       </p>
 
-      <!-- 追加: Discordポップアップを開くボタン -->
-      <button onclick="openDiscordModal()" class="mb-8 mx-auto bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 flex items-center gap-3">
-        <i class="fa-brands fa-discord text-2xl"></i>
-        <span>Discordサーバーに参加</span>
-      </button>
+      <!-- 改善2: Discordボタン周りを枠で囲って意味を持たせる -->
+      <div class="bg-gray-900/50 border border-[#5865F2]/30 rounded-xl p-5 mb-10 max-w-md mx-auto shadow-inner">
+        <p class="text-sm text-gray-300 mb-3 font-bold"><i class="fa-solid fa-circle-info text-[#5865F2] mr-1"></i> Discordに参加（推奨）</p>
+        <button onclick="openDiscordModal()" class="w-full justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-8 rounded-lg shadow-[0_4px_0_#4752C4] active:shadow-[0_0px_0_#4752C4] active:translate-y-1 transition-all flex items-center gap-3">
+          <i class="fa-brands fa-discord text-2xl"></i>
+          <span class="tracking-wide">Discordサーバーに参加</span>
+        </button>
+        <p class="text-xs text-gray-500 mt-3">ルールや最新情報などを確認できます</p>
+      </div>
 
       <!-- Turnstileウィジェットコンテナ -->
       <div id="turnstile-container" class="flex justify-center mb-4 min-h-[65px]">
@@ -126,6 +137,57 @@
       <div id="errorMessage" class="hidden bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mt-4 max-w-md mx-auto">
       </div>
 
+    </section>
+
+    <!-- 追加: 参加方法セクション -->
+    <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-6 mb-12">
+      <h3 class="text-xl font-bold mb-6 flex items-center border-b border-gray-700 pb-2">
+        <i class="fa-solid fa-gamepad text-purple-400 mr-2"></i> サーバーへの参加方法
+      </h3>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Step 1 -->
+        <div class="bg-gray-900/50 rounded-lg p-5 border border-gray-700 relative">
+          <div class="absolute -top-3 -left-3 bg-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-black text-white border-4 border-gray-800">1</div>
+          <h4 class="font-bold text-lg mb-2 text-white mt-1">アドレスを取得</h4>
+          <p class="text-sm text-gray-400">上の認証エリアでチェックボックスをクリックし、サーバーのIPアドレスを取得して「コピー」します。</p>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="bg-gray-900/50 rounded-lg p-5 border border-gray-700 relative">
+          <div class="absolute -top-3 -left-3 bg-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-black text-white border-4 border-gray-800">2</div>
+          <h4 class="font-bold text-lg mb-2 text-white mt-1">マルチプレイを開く</h4>
+          <p class="text-sm text-gray-400">Minecraftを起動し、タイトル画面から「マルチプレイ」を選び、「サーバーを追加」をクリックします。</p>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="bg-gray-900/50 rounded-lg p-5 border border-gray-700 relative">
+          <div class="absolute -top-3 -left-3 bg-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-black text-white border-4 border-gray-800">3</div>
+          <h4 class="font-bold text-lg mb-2 text-white mt-1">アドレスを入力</h4>
+          <p class="text-sm text-gray-400">「サーバーアドレス」の欄にコピーしたアドレスを貼り付け、「完了」を押してサーバーに接続！</p>
+        </div>
+      </div>
+      
+      <!-- 統合版プレイヤー向けの補足 -->
+      <div class="mt-6 p-4 bg-blue-900/20 border border-blue-800/50 rounded-lg text-sm text-blue-200 flex items-start gap-3">
+        <i class="fa-solid fa-circle-info text-blue-400 mt-0.5 text-lg"></i>
+        <div class="space-y-2">
+          <p class="font-bold text-blue-300">統合版（スマホ・Switch・PS等）から参加する場合</p>
+          <p class="text-blue-200/80">スマホ版やPC版（Windows）の場合は、「サーバー名」に好きな名前を入力し、ポート番号はデフォルトの「19132」のままでご参加いただけます。</p>
+          
+          <div class="bg-blue-950/50 p-4 rounded border border-blue-800/30 mt-3">
+            <p class="font-bold text-blue-300 mb-2"><i class="fa-solid fa-gamepad mr-2"></i>ゲーム機版（Switch, PS等）をご利用の方へ</p>
+            <p class="text-blue-200/80 mb-3 leading-relaxed">ゲーム機の仕様上、直接サーバーアドレスを入力して追加することができません。<br>誠にお手数ですが、有志の方が作成された以下の解説サイト様をご参考に、接続設定を行っていただきますようお願いいたします。</p>
+            
+            <a href="https://kuwa.app/tool/hjs/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-blue-300 hover:text-white hover:bg-blue-800 font-bold bg-blue-900/50 border border-blue-700 px-4 py-2 rounded transition-all">
+              <span>接続方法の解説サイトを開く</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i> 
+            </a>
+            
+            <p class="text-xs text-blue-400/60 mt-3">※リンク先のサイトは当サーバーが管理・運営しているものではございません。</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- サーバー情報セクション（2カラム） -->
