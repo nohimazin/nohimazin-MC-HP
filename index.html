@@ -5,110 +5,195 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>暇じゃない暇人のサーバー（仮）</title>
   
+  <!-- Tailwind CSS (スタイリング用) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome (アイコン用) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <style>
-    /* 全体のデザイン（少しダークでゲームっぽい雰囲気に） */
-    body { 
-      font-family: 'Helvetica Neue', Arial, sans-serif; 
-      background-color: #1e1e24; /* ダークグレーの背景 */
-      color: #f5f5f5; /* 白系の文字 */
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      /* マイクラの夜空をイメージした背景色 */
+      background-color: #111827; 
+      /* ドットパターンの背景 */
+      background-image: radial-gradient(#374151 1px, transparent 1px);
+      background-size: 20px 20px;
     }
     
-    /* コンテンツを真ん中にまとめる枠 */
-    .container { 
-      max-width: 800px; 
-      margin: 40px auto; 
-      padding: 0 20px; 
+    .minecraft-btn {
+      box-shadow: 0 4px 0 #166534; /* 濃い緑の影 */
+      transition: all 0.1s;
     }
-
-    /* 各セクションの箱（カード風） */
-    .card { 
-      background: #2b2b36; 
-      padding: 25px; 
-      border-radius: 10px; 
-      margin-bottom: 25px; 
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+    .minecraft-btn:active {
+      box-shadow: 0 0px 0 #166534;
+      transform: translateY(4px);
     }
-
-    /* 見出しの色（マイクラの草ブロックのような緑色） */
-    h1 { color: #4CAF50; text-align: center; font-size: 2em; margin-bottom: 10px; }
-    h2 { color: #4CAF50; font-size: 1.5em; border-bottom: 2px solid #4CAF50; padding-bottom: 5px; }
-
-    /* 認証・アドレス表示部分 */
-    .auth-section { text-align: center; }
-    #addressDisplay { margin-top: 20px; font-weight: bold; font-size: 28px; color: #a5d6a7; letter-spacing: 1px; }
-    .error { color: #ff5252; margin-top: 15px; font-weight: bold; }
-    .turnstile-container { display: flex; justify-content: center; margin-top: 20px; }
-
-    /* リストの装飾 */
-    ul { padding-left: 20px; }
-    li { margin-bottom: 8px; }
+    
+    /* ローディングアニメーション */
+    .loader {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top: 4px solid #22c55e;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body>
+<body class="text-gray-100 min-h-screen flex flex-col">
 
-  <div class="container">
+  <!-- ナビゲーション / ヘッダー -->
+  <header class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-cube text-green-500 text-2xl"></i>
+        <h1 class="text-xl font-bold tracking-wider">暇じゃない暇人ののサーバー（仮）</span></h1>
+      </div>
+      <!-- Discordなどのリンクを入れる場所 -->
+      <a href="#" class="text-gray-400 hover:text-[#5865F2] transition-colors" title="Discordに参加">
+        <i class="fa-brands fa-discord text-2xl"></i>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-5xl mx-auto px-4 py-12 w-full">
     
-    <h1>暇じゃない暇人のサーバー（仮）</h1>
-    <p style="text-align: center;">のんびり、自由にマイクラを楽しむためのサーバーです！</p>
+    <!-- ヒーローセクション（メインの認証エリア） -->
+    <section class="bg-gray-800/90 border border-gray-700 rounded-2xl shadow-2xl p-8 mb-12 text-center relative overflow-hidden">
+      <!-- 装飾用背景色 -->
+      <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-600 via-green-400 to-green-600"></div>
 
-    <div class="card auth-section">
-      <h2>サーバーに参加する</h2>
-      <p>Bot対策のため、以下のチェックボックスをクリックしてアドレスを表示してください。</p>
+      <h2 class="text-3xl md:text-4xl font-black mb-4 mt-2">暇じゃない暇人のサーバー（仮）へようこそ！</h2>
+      <p class="text-gray-300 mb-8 max-w-xl mx-auto">
       
-      <div class="turnstile-container">
+        認証に成功すると、サーバーに参加するためのアドレスが表示されます。
+      </p>
+
+      <!-- Turnstileウィジェットコンテナ -->
+      <div id="turnstile-container" class="flex justify-center mb-4 min-h-[65px]">
         <div class="cf-turnstile" 
              data-sitekey="0x4AAAAAACwn8Ha5MScIlv_Q" 
              data-callback="onTurnstileSuccess"></div>
       </div>
 
-      <div id="addressDisplay"></div>
-      <div id="errorMessage" class="error"></div>
-    </div>
+      <!-- ローディング表示 -->
+      <div id="loading" class="hidden flex flex-col items-center justify-center py-6">
+        <div class="loader mb-4"></div>
+        <p class="text-green-400 font-bold animate-pulse">サーバーアドレスを取得中...</p>
+      </div>
 
-    <div class="card">
-      <h2>サーバー情報</h2>
-      <ul>
-        <li><strong>エディション：</strong> Java版</li>
-        <li><strong>バージョン：</strong> 1.20.4（※ご自身の環境に合わせて書き換えてください）</li>
-        <li><strong>プレイスタイル：</strong> サバイバル / バニラ</li>
-        <li><strong>稼働時間：</strong> 24時間稼働</li>
-      </ul>
-    </div>
+      <!-- アドレス表示エリア（初期は非表示） -->
+      <div id="resultArea" class="hidden py-6">
+        <p class="text-sm text-gray-400 mb-2">サーバーアドレス</p>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <div class="bg-gray-950 border border-gray-700 rounded-lg px-6 py-4 flex-grow max-w-md">
+            <span id="addressText" class="text-2xl font-bold text-green-400 font-mono tracking-wider select-all"></span>
+          </div>
+          <button id="copyButton" onclick="copyAddress()" class="minecraft-btn bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-8 rounded-lg flex items-center gap-2">
+            <i class="fa-regular fa-copy"></i>
+            <span>コピー</span>
+          </button>
+        </div>
+        <p class="text-sm text-green-500 mt-4"><i class="fa-solid fa-circle-check mr-1"></i>認証成功！Minecraftのマルチプレイから追加してください。</p>
+      </div>
 
-    <div class="card">
-      <h2>プレイルール</h2>
-      <p>みんなが楽しく遊べるように、以下のルールを守ってください。</p>
-      <ul>
-        <li>他人の建築物を勝手に壊したり、アイテムを盗んだりしないこと（窃盗・荒らし禁止）。</li>
-        <li>チャットでの暴言や、他の人が不快になる発言はしないこと。</li>
-        <li>チートツールや、サーバーに過度な負担をかけるMODの使用は禁止です。</li>
-      </ul>
-    </div>
+      <!-- エラーメッセージ -->
+      <div id="errorMessage" class="hidden bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mt-4 max-w-md mx-auto">
+      </div>
 
-    <div class="card" style="text-align: center;">
-      <h2>コミュニティ</h2>
-      <p>サーバーの最新情報や、プレイヤー同士の交流はDiscordで行っています！</p>
-      <p>👉 <a href="https://discord.gg/あなたの招待リンク" target="_blank" style="color: #64b5f6;">Discordサーバーに参加する</a></p>
-    </div>
+    </section>
 
-  </div>
+    <!-- サーバー情報セクション（2カラム） -->
+    <div class="grid md:grid-cols-2 gap-8">
+      
+      <!-- 特徴 -->
+      <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-6">
+        <h3 class="text-xl font-bold mb-4 flex items-center border-b border-gray-700 pb-2">
+          <i class="fa-solid fa-star text-yellow-500 mr-2"></i> サーバーの特徴
+        </h3>
+        <ul class="space-y-3 text-gray-300">
+          <li class="flex items-start">
+            <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+            <span>バージョン: <strong>1.21.11</strong>（これ以降のバージョンでも参加可能）</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+            <span><strong>GeyserMC導入済:</strong> 現在サポートされているすべてのMinecraft（Java版・統合版）で参加可能です</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+            <span>24時間365日稼働（メンテナンス時を除く）</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ルール -->
+      <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-6">
+        <h3 class="text-xl font-bold mb-4 flex items-center border-b border-gray-700 pb-2">
+          <i class="fa-solid fa-ban text-red-400 mr-2"></i> 禁止事項
+        </h3>
+        <ul class="space-y-3 text-gray-300">
+          <li class="flex items-start">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 mt-1 mr-2"></i>
+            <span>荒らし・窃盗</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 mt-1 mr-2"></i>
+            <span>チート・不正ツールの使用</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 mt-1 mr-2"></i>
+            <span>他人が不快になる言動・行動</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 mt-1 mr-2"></i>
+            <span>過度にサーバーに負荷をかける装置の作成</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 mt-1 mr-2"></i>
+            <span>運営の指示に従わない行為</span>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- フッター -->
+  <footer class="bg-gray-900 border-t border-gray-800 text-center py-6 mt-auto">
+    <p class="text-gray-500 text-sm">&copy; 2026 暇じゃない暇人のサーバー（仮）. All rights reserved.</p>
+    <p class="text-gray-600 text-xs mt-2">Not an official Minecraft product. Not approved by or associated with Mojang.</p>
+  </footer>
 
   <script>
+    // 【WorkerのURL】をここに入力してください
     const WORKER_URL = '/api/get-ip';
 
+    // Turnstileのチェックが成功した時に自動で実行される処理
     function onTurnstileSuccess(token) {
-      const display = document.getElementById('addressDisplay');
+      const turnstileWidget = document.getElementById('turnstile-container');
+      const loading = document.getElementById('loading');
+      const resultArea = document.getElementById('resultArea');
       const errorMsg = document.getElementById('errorMessage');
-      const turnstileWidget = document.querySelector('.turnstile-container');
+      const addressText = document.getElementById('addressText');
 
-      display.innerText = "通信中...";
-      errorMsg.innerText = "";
+      // UIの状態を「通信中」に切り替え
+      turnstileWidget.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+      loading.classList.remove('hidden');
 
+      // Workerへトークンを送信
       const formData = new FormData();
       formData.append('token', token);
 
@@ -118,20 +203,82 @@
       })
       .then(response => response.json())
       .then(data => {
+        loading.classList.add('hidden'); // ローディングを隠す
+
         if(data.success) {
-          display.innerText = "IPアドレス: " + data.address;
-          turnstileWidget.style.display = 'none';
+          // 成功したらアドレスを表示
+          addressText.innerText = data.address;
+          resultArea.classList.remove('hidden');
         } else {
-          errorMsg.innerText = "エラー: " + data.message;
-          display.innerText = "";
-          turnstile.reset();
+          // エラー時
+          showError("エラー: " + (data.message || "認証に失敗しました"));
         }
       })
       .catch(error => {
         console.error('通信エラー:', error);
-        errorMsg.innerText = "通信エラーが発生しました。";
-        display.innerText = "";
+        loading.classList.add('hidden');
+        
+        // --- ▼ プレビュー環境等でのテスト用のフォールバック（本番では削除してもOKです） ▼ ---
+        // WORKER_URL が設定されていない環境でテストできるように、エラーになってもダミーIPを表示します
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'data:') {
+            console.warn("開発・プレビュー環境のため、ダミーのIPを表示します。");
+            addressText.innerText = "play.example-minecraft.com";
+            resultArea.classList.remove('hidden');
+            return;
+        }
+        // --- ▲ ここまで ▲ ---
+
+        showError("通信エラーが発生しました。サーバーが混雑しているか、URLが間違っています。");
+      });
+    }
+
+    // エラーを表示してTurnstileをリセットする補助関数
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      const turnstileWidget = document.getElementById('turnstile-container');
+      
+      errorMsg.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-2"></i>' + message;
+      errorMsg.classList.remove('hidden');
+      turnstileWidget.classList.remove('hidden');
+      
+      if (typeof turnstile !== 'undefined') {
         turnstile.reset();
+      }
+    }
+
+    // アドレスをクリップボードにコピーする関数
+    function copyAddress() {
+      const address = document.getElementById('addressText').innerText;
+      const copyBtn = document.getElementById('copyButton');
+      const originalHTML = copyBtn.innerHTML;
+
+      // コピー実行
+      navigator.clipboard.writeText(address).then(() => {
+        // コピー成功時のボタン表示変更
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>コピー完了!</span>';
+        copyBtn.classList.remove('bg-green-600', 'hover:bg-green-500');
+        copyBtn.classList.add('bg-blue-600', 'hover:bg-blue-500');
+
+        // 2秒後に元の表示に戻す
+        setTimeout(() => {
+          copyBtn.innerHTML = originalHTML;
+          copyBtn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+          copyBtn.classList.add('bg-green-600', 'hover:bg-green-500');
+        }, 2000);
+      }).catch(err => {
+        // navigator.clipboard が使えないブラウザ環境向けのフォールバック
+        const textArea = document.createElement("textarea");
+        textArea.value = address;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>コピー完了!</span>';
+          setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
+        } catch (e) {
+          alert('コピーに失敗しました。手動でコピーしてください。');
+        }
+        document.body.removeChild(textArea);
       });
     }
   </script>
