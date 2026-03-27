@@ -92,27 +92,15 @@
       <!-- 装飾用背景色 -->
       <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-600 via-green-400 to-green-600"></div>
 
-      <!-- 改善1: タイトルのメリハリ強化 -->
       <h2 class="text-3xl md:text-5xl font-black mb-6 mt-4 tracking-tight">
         <span class="block text-green-400 mb-2 text-lg md:text-xl tracking-widest font-bold">WELCOME TO OFFICIAL WEBSITE</span>
         暇じゃない暇人の<br class="sm:hidden">マイクラサーバー<span class="text-2xl text-gray-500 font-bold">（仮）</span>
       </h2>
       
-      <!-- 改善3: 説明文を少し親しみやすく具体的に -->
       <p class="text-gray-300 mb-8 max-w-xl mx-auto leading-relaxed">
         当サーバーはJava版・統合版のどちらからでも参加可能です！<br>
         BOT対策のため、下のチェックボックスから人間であることを証明して、サーバーアドレスを取得してください。
       </p>
-
-      <!-- 改善2: Discordボタン周りを枠で囲って意味を持たせる -->
-      <div class="bg-gray-900/50 border border-[#5865F2]/30 rounded-xl p-5 mb-10 max-w-md mx-auto shadow-inner">
-        <p class="text-sm text-gray-300 mb-3 font-bold"><i class="fa-solid fa-circle-info text-[#5865F2] mr-1"></i> Discordに参加（推奨）</p>
-        <button onclick="openDiscordModal()" class="w-full justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-8 rounded-lg shadow-[0_4px_0_#4752C4] active:shadow-[0_0px_0_#4752C4] active:translate-y-1 transition-all flex items-center gap-3">
-          <i class="fa-brands fa-discord text-2xl"></i>
-          <span class="tracking-wide">Discordサーバーに参加</span>
-        </button>
-        <p class="text-xs text-gray-500 mt-3">ルールや最新情報などを確認できます</p>
-      </div>
 
       <!-- Turnstileウィジェットコンテナ -->
       <div id="turnstile-container" class="flex justify-center mb-4 min-h-[65px]">
@@ -127,19 +115,29 @@
         <p class="text-green-400 font-bold animate-pulse">サーバーアドレスを取得中...</p>
       </div>
 
-      <!-- アドレス表示エリア（初期は非表示） -->
-      <div id="resultArea" class="hidden py-6">
+      <!-- 順序変更: アドレス表示エリアをDiscordボタンの上に配置 -->
+      <div id="resultArea" class="hidden py-6 mb-10 border-b border-gray-700/50 pb-10">
         <p class="text-sm text-gray-400 mb-2">サーバーアドレス</p>
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <div class="bg-gray-950 border border-gray-700 rounded-lg px-6 py-4 flex-grow max-w-md">
-            <span id="addressText" class="text-2xl font-bold text-green-400 font-mono tracking-wider select-all"></span>
+          <div class="bg-gray-950 border border-gray-700 rounded-lg px-6 py-4 flex-grow max-w-md w-full">
+            <span id="addressText" class="text-2xl font-bold text-green-400 font-mono tracking-wider select-all break-all"></span>
           </div>
-          <button id="copyButton" onclick="copyAddress()" class="minecraft-btn bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-8 rounded-lg flex items-center gap-2">
+          <button id="copyButton" onclick="copyAddress()" class="minecraft-btn bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-8 rounded-lg flex items-center gap-2 w-full sm:w-auto justify-center">
             <i class="fa-regular fa-copy"></i>
             <span>コピー</span>
           </button>
         </div>
         <p class="text-sm text-green-500 mt-4"><i class="fa-solid fa-circle-check mr-1"></i>認証成功！Minecraftのマルチプレイから追加してください。</p>
+      </div>
+
+      <!-- 順序変更: Discordボタンを下に配置 -->
+      <div class="bg-gray-900/50 border border-[#5865F2]/30 rounded-xl p-5 mb-4 max-w-md mx-auto shadow-inner">
+        <p class="text-sm text-gray-300 mb-3 font-bold"><i class="fa-solid fa-circle-info text-[#5865F2] mr-1"></i> Discordに参加（推奨）</p>
+        <button onclick="openDiscordModal()" class="w-full justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-8 rounded-lg shadow-[0_4px_0_#4752C4] active:shadow-[0_0px_0_#4752C4] active:translate-y-1 transition-all flex items-center gap-3">
+          <i class="fa-brands fa-discord text-2xl"></i>
+          <span class="tracking-wide">Discordサーバーに参加</span>
+        </button>
+        <p class="text-xs text-gray-500 mt-3">ルールや最新情報などを確認できます</p>
       </div>
 
       <!-- エラーメッセージ -->
@@ -148,7 +146,7 @@
 
     </section>
 
-    <!-- 追加: 参加方法セクション -->
+    <!-- 参加方法セクション -->
     <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-6 mb-12">
       <h3 class="text-xl font-bold mb-6 flex items-center border-b border-gray-700 pb-2">
         <i class="fa-solid fa-gamepad text-purple-400 mr-2"></i> サーバーへの参加方法
@@ -255,7 +253,7 @@
     </div>
   </main>
 
-  <!-- 追加: Discordポップアップ（モーダル） -->
+  <!-- Discordポップアップ（モーダル） -->
   <div id="discordModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center backdrop-blur-sm modal-overlay opacity-0">
     <div id="discordModalContent" class="bg-gray-800 border-2 border-[#5865F2] rounded-2xl p-8 max-w-md w-full mx-4 shadow-[0_0_30px_rgba(88,101,242,0.3)] relative modal-content opacity-0 scale-75 translate-y-8">
       <!-- 閉じるボタン -->
@@ -277,7 +275,6 @@
       <div class="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-3">
         <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">参加URL</p>
         <div class="flex items-center justify-between gap-2">
-          <!-- URLをクリック可能なリンクに変更 -->
           <a id="discordUrlText" href="https://discord.gg/zYA86R6ewj" target="_blank" rel="noopener noreferrer" class="text-[#5865F2] hover:text-[#4752C4] hover:underline font-mono truncate cursor-pointer transition-colors" title="クリックしてDiscordを開く">https://discord.gg/zYA86R6ewj</a>
           <button id="copyDiscordBtn" onclick="copyDiscordUrl()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors text-sm whitespace-nowrap flex items-center gap-2">
             <i class="fa-regular fa-copy"></i>
@@ -294,7 +291,6 @@
       <p class="text-gray-500 text-sm mb-2">&copy; 2026 暇じゃない暇人のマイクラサーバー（仮）. All rights reserved.</p>
       <p class="text-gray-600 text-xs mb-6">Not an official Minecraft product. Not approved by or associated with Mojang.</p>
       
-      <!-- 追加: プライバシーに関する開示（Clarity & Turnstile） -->
       <div class="text-gray-600 text-[11px] leading-relaxed border-t border-gray-800/50 pt-4 text-left sm:text-center max-w-2xl mx-auto">
         <p class="font-bold mb-1 text-gray-500">【プライバシーについて】</p>
         <p>
@@ -307,10 +303,8 @@
   </footer>
 
   <script>
-    // 【WorkerのURL】をここに入力してください
     const WORKER_URL = '/api/get-ip';
 
-    // Turnstileのチェックが成功した時に自動で実行される処理
     function onTurnstileSuccess(token) {
       const turnstileWidget = document.getElementById('turnstile-container');
       const loading = document.getElementById('loading');
@@ -318,12 +312,10 @@
       const errorMsg = document.getElementById('errorMessage');
       const addressText = document.getElementById('addressText');
 
-      // UIの状態を「通信中」に切り替え
       turnstileWidget.classList.add('hidden');
       errorMsg.classList.add('hidden');
       loading.classList.remove('hidden');
 
-      // Workerへトークンを送信
       const formData = new FormData();
       formData.append('token', token);
 
@@ -333,14 +325,12 @@
       })
       .then(response => response.json())
       .then(data => {
-        loading.classList.add('hidden'); // ローディングを隠す
+        loading.classList.add('hidden');
 
         if(data.success) {
-          // 成功したらアドレスを表示
           addressText.innerText = data.address;
           resultArea.classList.remove('hidden');
         } else {
-          // エラー時
           showError("エラー: " + (data.message || "認証に失敗しました"));
         }
       })
@@ -348,21 +338,17 @@
         console.error('通信エラー:', error);
         loading.classList.add('hidden');
         
-        // --- ▼ プレビュー環境等でのテスト用のフォールバック（本番では削除してもOKです） ▼ ---
-        // WORKER_URL が設定されていない環境でテストできるように、エラーになってもダミーIPを表示します
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'data:') {
             console.warn("開発・プレビュー環境のため、ダミーのIPを表示します。");
             addressText.innerText = "play.example-minecraft.com";
             resultArea.classList.remove('hidden');
             return;
         }
-        // --- ▲ ここまで ▲ ---
 
         showError("通信エラーが発生しました。サーバーが混雑しているか、URLが間違っています。");
       });
     }
 
-    // エラーを表示してTurnstileをリセットする補助関数
     function showError(message) {
       const errorMsg = document.getElementById('errorMessage');
       const turnstileWidget = document.getElementById('turnstile-container');
@@ -376,27 +362,22 @@
       }
     }
 
-    // アドレスをクリップボードにコピーする関数
     function copyAddress() {
       const address = document.getElementById('addressText').innerText;
       const copyBtn = document.getElementById('copyButton');
       const originalHTML = copyBtn.innerHTML;
 
-      // コピー実行
       navigator.clipboard.writeText(address).then(() => {
-        // コピー成功時のボタン表示変更
         copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>コピー完了!</span>';
         copyBtn.classList.remove('bg-green-600', 'hover:bg-green-500');
         copyBtn.classList.add('bg-blue-600', 'hover:bg-blue-500');
 
-        // 2秒後に元の表示に戻す
         setTimeout(() => {
           copyBtn.innerHTML = originalHTML;
           copyBtn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
           copyBtn.classList.add('bg-green-600', 'hover:bg-green-500');
         }, 2000);
       }).catch(err => {
-        // navigator.clipboard が使えないブラウザ環境向けのフォールバック
         const textArea = document.createElement("textarea");
         textArea.value = address;
         document.body.appendChild(textArea);
@@ -406,27 +387,20 @@
           copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>コピー完了!</span>';
           setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
         } catch (e) {
-          // alertを使わずエラーメッセージだけ出すなど適宜調整
           console.error('コピーに失敗しました');
         }
         document.body.removeChild(textArea);
       });
     }
 
-    // --- 追加: Discordモーダルの制御関数 ---
     function openDiscordModal() {
       const modal = document.getElementById('discordModal');
       const content = document.getElementById('discordModalContent');
-      
-      // まず display:none (hidden) を解除
       modal.classList.remove('hidden');
-      
-      // ブラウザに描画を認識させた後、アニメーション用のクラスを付与
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           modal.classList.remove('opacity-0');
           modal.classList.add('opacity-100');
-          
           content.classList.remove('opacity-0', 'scale-75', 'translate-y-8');
           content.classList.add('opacity-100', 'scale-100', 'translate-y-0');
         });
@@ -436,33 +410,25 @@
     function closeDiscordModal() {
       const modal = document.getElementById('discordModal');
       const content = document.getElementById('discordModalContent');
-
-      // 閉じる時のアニメーションを開始
       modal.classList.remove('opacity-100');
       modal.classList.add('opacity-0');
-      
       content.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
       content.classList.add('opacity-0', 'scale-75', 'translate-y-8');
-
-      // アニメーションが終わる頃に hidden を追加して完全に隠す
       setTimeout(() => {
         modal.classList.add('hidden');
-      }, 300); // .modal-overlay の 0.3s に合わせる
+      }, 300);
     }
 
-    // モーダルの外側の暗い部分をクリックした時も閉じるようにする
     document.getElementById('discordModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeDiscordModal();
       }
     });
 
-    // DiscordのURLをコピーする関数
     function copyDiscordUrl() {
       const url = document.getElementById('discordUrlText').innerText;
       const btn = document.getElementById('copyDiscordBtn');
       const originalHTML = btn.innerHTML;
-
       navigator.clipboard.writeText(url).then(() => {
         btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i><span class="text-green-400">コピー済!</span>';
         setTimeout(() => {
