@@ -1,1 +1,105 @@
-<h1>マイクラサーバー準備中！</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraftサーバー</title>
+  
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    #addressDisplay {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 24px;
+      color: #333;
+    }
+    .error {
+      color: red;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>〇〇サーバーへようこそ！</h1>
+  <p>以下のボタンを押すと、サーバーに参加するためのアドレスが表示されます。</p>
+
+  <button class="g-recaptcha btn" 
+          data-sitekey="ここにサイトキーを貼り付けてください" 
+          data-callback="onSubmit" 
+          id="showAddressBtn">
+    サーバーアドレスを表示する
+  </button>
+
+  <div id="addressDisplay"></div>
+  <div id="errorMessage" class="error"></div>
+
+  <script>
+    // 2. 【GASのウェブアプリURL】をここに入力してください
+    const GAS_URL = 'https://script.google.com/macros/s/〜〜〜/exec';
+
+    // reCAPTCHAの判定が終わった（またはパズルをクリアした）時に自動で実行される処理
+    function onSubmit(token) {
+      const btn = document.getElementById('showAddressBtn');
+      const display = document.getElementById('addressDisplay');
+      const errorMsg = document.getElementById('errorMessage');
+
+      btn.innerText = "確認中...";
+      btn.disabled = true;
+      errorMsg.innerText = "";
+
+      // 取得したトークンをGASへ送信
+      const params = new URLSearchParams();
+      params.append('token', token);
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: params
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.success) {
+          // 人間と判定されたらアドレスを表示し、ボタンを消す
+          display.innerText = "アドレス: " + data.address;
+          btn.style.display = 'none';
+        } else {
+          // Bot判定された場合のエラー表示
+          errorMsg.innerText = "エラー: " + data.message;
+          resetButton();
+        }
+      })
+      .catch(error => {
+        console.error('通信エラー:', error);
+        errorMsg.innerText = "通信エラーが発生しました。時間をおいてやり直してください。";
+        resetButton();
+      });
+    }
+
+    // エラーが起きた時にボタンを元の状態に戻す処理
+    function resetButton() {
+      const btn = document.getElementById('showAddressBtn');
+      btn.innerText = "サーバーアドレスを表示する";
+      btn.disabled = false;
+      grecaptcha.reset(); // reCAPTCHAをリセットして、もう一度押せるようにする
+    }
+  </script>
+</body>
+</html>
