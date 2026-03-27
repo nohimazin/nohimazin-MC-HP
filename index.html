@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>暇じゃない暇人のサーバー（仮）</title>
+  <title>暇じゃない暇人のマイクラサーバー（仮）</title>
   
   <!-- Tailwind CSS (スタイリング用) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -49,6 +49,15 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    /* モーダル用のアニメーション設定 */
+    .modal-overlay {
+      transition: opacity 0.3s ease-out;
+    }
+    .modal-content {
+      /* ポヨンと弾むような心地よいイージング */
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
   </style>
 </head>
 <body class="text-gray-100 min-h-screen flex flex-col">
@@ -58,12 +67,12 @@
     <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center gap-2">
         <i class="fa-solid fa-cube text-green-500 text-2xl"></i>
-        <h1 class="text-xl font-bold tracking-wider">暇じゃない暇人ののサーバー（仮）</span></h1>
+        <h1 class="text-xl font-bold tracking-wider">暇じゃない暇人のマイクラサーバー（仮）</h1>
       </div>
-      <!-- Discordなどのリンクを入れる場所 -->
-      <a href="#" class="text-gray-400 hover:text-[#5865F2] transition-colors" title="Discordに参加">
+      <!-- 右上のDiscordアイコンをクリックでポップアップを開くように変更 -->
+      <button onclick="openDiscordModal()" class="text-gray-400 hover:text-[#5865F2] transition-colors" title="Discordに参加">
         <i class="fa-brands fa-discord text-2xl"></i>
-      </a>
+      </button>
     </div>
   </header>
 
@@ -74,11 +83,16 @@
       <!-- 装飾用背景色 -->
       <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-600 via-green-400 to-green-600"></div>
 
-      <h2 class="text-3xl md:text-4xl font-black mb-4 mt-2">暇じゃない暇人のサーバー（仮）へようこそ！</h2>
+      <h2 class="text-3xl md:text-4xl font-black mb-4 mt-2">暇じゃない暇人のマイクラサーバー（仮）へようこそ！</h2>
       <p class="text-gray-300 mb-8 max-w-xl mx-auto">
-      
-        認証に成功すると、サーバーに参加するためのアドレスが表示されます。
+        認証に成功すると、参加するためのアドレスが表示されます。
       </p>
+
+      <!-- 追加: Discordポップアップを開くボタン -->
+      <button onclick="openDiscordModal()" class="mb-8 mx-auto bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 flex items-center gap-3">
+        <i class="fa-brands fa-discord text-2xl"></i>
+        <span>Discordサーバーに参加</span>
+      </button>
 
       <!-- Turnstileウィジェットコンテナ -->
       <div id="turnstile-container" class="flex justify-center mb-4 min-h-[65px]">
@@ -129,7 +143,7 @@
           </li>
           <li class="flex items-start">
             <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
-            <span><strong>GeyserMC導入済:</strong> 現在サポートされているすべてのMinecraft（Java版・統合版）で参加可能です</span>
+            <span><strong>GeyserMC導入済:</strong> 現在サポートされているすべてのMinecraft（Java版・統合版）で参加可能です！</span>
           </li>
           <li class="flex items-start">
             <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
@@ -169,6 +183,39 @@
 
     </div>
   </main>
+
+  <!-- 追加: Discordポップアップ（モーダル） -->
+  <div id="discordModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center backdrop-blur-sm modal-overlay opacity-0">
+    <div id="discordModalContent" class="bg-gray-800 border-2 border-[#5865F2] rounded-2xl p-8 max-w-md w-full mx-4 shadow-[0_0_30px_rgba(88,101,242,0.3)] relative modal-content opacity-0 scale-75 translate-y-8">
+      <!-- 閉じるボタン -->
+      <button onclick="closeDiscordModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-2xl"></i>
+      </button>
+      
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-[#5865F2] rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa-brands fa-discord text-white text-3xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">チョコのサーバー</h3>
+        <p class="text-gray-300 text-sm">
+          公式Discord鯖です。<br>
+          ルールや最新情報はこちらで確認できます！
+        </p>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-3">
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">参加URL</p>
+        <div class="flex items-center justify-between gap-2">
+          <!-- URLをクリック可能なリンクに変更 -->
+          <a id="discordUrlText" href="https://discord.gg/zYA86R6ewj" target="_blank" rel="noopener noreferrer" class="text-[#5865F2] hover:text-[#4752C4] hover:underline font-mono truncate cursor-pointer transition-colors" title="クリックしてDiscordを開く">https://discord.gg/zYA86R6ewj</a>
+          <button id="copyDiscordBtn" onclick="copyDiscordUrl()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors text-sm whitespace-nowrap flex items-center gap-2">
+            <i class="fa-regular fa-copy"></i>
+            <span>コピー</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- フッター -->
   <footer class="bg-gray-900 border-t border-gray-800 text-center py-6 mt-auto">
@@ -276,9 +323,70 @@
           copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>コピー完了!</span>';
           setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
         } catch (e) {
-          alert('コピーに失敗しました。手動でコピーしてください。');
+          // alertを使わずエラーメッセージだけ出すなど適宜調整
+          console.error('コピーに失敗しました');
         }
         document.body.removeChild(textArea);
+      });
+    }
+
+    // --- 追加: Discordモーダルの制御関数 ---
+    function openDiscordModal() {
+      const modal = document.getElementById('discordModal');
+      const content = document.getElementById('discordModalContent');
+      
+      // まず display:none (hidden) を解除
+      modal.classList.remove('hidden');
+      
+      // ブラウザに描画を認識させた後、アニメーション用のクラスを付与
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          modal.classList.remove('opacity-0');
+          modal.classList.add('opacity-100');
+          
+          content.classList.remove('opacity-0', 'scale-75', 'translate-y-8');
+          content.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+        });
+      });
+    }
+
+    function closeDiscordModal() {
+      const modal = document.getElementById('discordModal');
+      const content = document.getElementById('discordModalContent');
+
+      // 閉じる時のアニメーションを開始
+      modal.classList.remove('opacity-100');
+      modal.classList.add('opacity-0');
+      
+      content.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+      content.classList.add('opacity-0', 'scale-75', 'translate-y-8');
+
+      // アニメーションが終わる頃に hidden を追加して完全に隠す
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300); // .modal-overlay の 0.3s に合わせる
+    }
+
+    // モーダルの外側の暗い部分をクリックした時も閉じるようにする
+    document.getElementById('discordModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeDiscordModal();
+      }
+    });
+
+    // DiscordのURLをコピーする関数
+    function copyDiscordUrl() {
+      const url = document.getElementById('discordUrlText').innerText;
+      const btn = document.getElementById('copyDiscordBtn');
+      const originalHTML = btn.innerHTML;
+
+      navigator.clipboard.writeText(url).then(() => {
+        btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i><span class="text-green-400">コピー済!</span>';
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+        }, 2000);
+      }).catch(() => {
+        console.error('コピーに失敗しました。');
       });
     }
   </script>
