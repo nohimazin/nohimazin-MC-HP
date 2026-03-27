@@ -4,101 +4,68 @@
   <meta charset="UTF-8">
   <title>Minecraftサーバー</title>
   
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    .btn {
-      padding: 12px 24px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-    }
-    .btn:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-    #addressDisplay {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 24px;
-      color: #333;
-    }
-    .error {
-      color: red;
-      margin-top: 15px;
-    }
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    #addressDisplay { margin-top: 20px; font-weight: bold; font-size: 24px; color: #333; }
+    .error { color: red; margin-top: 15px; }
+    .turnstile-container { display: flex; justify-content: center; margin-top: 20px; }
   </style>
 </head>
 <body>
 
   <h1>〇〇サーバーへようこそ！</h1>
-  <p>以下のボタンを押すと、サーバーに参加するためのアドレスが表示されます。</p>
+  <p>以下のチェックボックスを押すと、サーバーに参加するためのアドレスが表示されます。</p>
 
-  <button class="g-recaptcha btn" 
-          data-sitekey="6LfJ75ksAAAAAFhv7AcX5ko7-TQHiitqsBOpbgPV" 
-          data-callback="onSubmit" 
-          id="showAddressBtn">
-    サーバーアドレスを表示する
-  </button>
+  <div class="turnstile-container">
+    <div class="cf-turnstile" 
+         data-sitekey="ここにサイトキーを貼り付けてください" 
+         data-callback="onTurnstileSuccess"></div>
+  </div>
 
   <div id="addressDisplay"></div>
   <div id="errorMessage" class="error"></div>
 
   <script>
-    // 2. 【GASのウェブアプリURL】をここに入力してください
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwV_mhPC0DIEmw9EOkHTUDIbmhCC15T30Ef6V5jbLxlgZZTQbqbkL2nxHFFPm2S-VU0/exec';
+    // 2. 【WorkerのURL】をここに入力してください
+    const WORKER_URL = 'https://〜〜〜.workers.dev';
 
-    // reCAPTCHAの判定が終わった（またはパズルをクリアした）時に自動で実行される処理
-    function onSubmit(token) {
-      const btn = document.getElementById('showAddressBtn');
+    // Turnstileのチェックが成功した時に自動で実行される処理
+    function onTurnstileSuccess(token) {
       const display = document.getElementById('addressDisplay');
       const errorMsg = document.getElementById('errorMessage');
+      const turnstileWidget = document.querySelector('.turnstile-container');
 
-      btn.innerText = "確認中...";
-      btn.disabled = true;
+      display.innerText = "通信中...";
       errorMsg.innerText = "";
 
-      // 取得したトークンをGASへ送信
-      const params = new URLSearchParams();
-      params.append('token', token);
+      // Workerへトークンを送信
+      const formData = new FormData();
+      formData.append('token', token);
 
-      fetch(GAS_URL, {
+      fetch(WORKER_URL, {
         method: 'POST',
-        body: params
+        body: formData
       })
       .then(response => response.json())
       .then(data => {
         if(data.success) {
-          // 人間と判定されたらアドレスを表示し、ボタンを消す
+          // 成功したらアドレスを表示し、Turnstileのウィジェットを隠す
           display.innerText = "アドレス: " + data.address;
-          btn.style.display = 'none';
+          turnstileWidget.style.display = 'none';
         } else {
-          // Bot判定された場合のエラー表示
           errorMsg.innerText = "エラー: " + data.message;
-          resetButton();
+          display.innerText = "";
+          turnstile.reset(); // リセットしてもう一度押せるようにする
         }
       })
       .catch(error => {
         console.error('通信エラー:', error);
-        errorMsg.innerText = "通信エラーが発生しました。時間をおいてやり直してください。";
-        resetButton();
+        errorMsg.innerText = "通信エラーが発生しました。";
+        display.innerText = "";
+        turnstile.reset();
       });
-    }
-
-    // エラーが起きた時にボタンを元の状態に戻す処理
-    function resetButton() {
-      const btn = document.getElementById('showAddressBtn');
-      btn.innerText = "サーバーアドレスを表示する";
-      btn.disabled = false;
-      grecaptcha.reset(); // reCAPTCHAをリセットして、もう一度押せるようにする
     }
   </script>
 </body>
