@@ -17,11 +17,13 @@ export async function onRequestPost(context) {
     const formData = await request.formData();
     const token = formData.get("token");
 
-    // ⚠️Cloudflareの環境変数から安全にキーとアドレスを読み込む
+    // ⚠️Cloudflareの環境変数から安全にキーと各種URLを読み込む
     const SECRET_KEY = env.TURNSTILE_SECRET_KEY;
     const SERVER_ADDRESS = env.SERVER_ADDRESS;
+    const DISCORD_URL = env.DISCORD_URL;
 
-    if (!SECRET_KEY || !SERVER_ADDRESS) {
+    // DISCORD_URL のチェックも追加
+    if (!SECRET_KEY || !SERVER_ADDRESS || !DISCORD_URL) {
       return new Response(JSON.stringify({ success: false, message: "サーバーの設定が完了していません。" }), { status: 500 });
     }
 
@@ -39,7 +41,8 @@ export async function onRequestPost(context) {
 
     let result = {};
     if (outcome.success) {
-      result = { success: true, address: SERVER_ADDRESS };
+      // 成功時、アドレスと一緒に Discord の URL も返す
+      result = { success: true, address: SERVER_ADDRESS, discordUrl: DISCORD_URL };
     } else {
       result = { success: false, message: "Botとして判定されました。" };
     }
