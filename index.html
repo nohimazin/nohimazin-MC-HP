@@ -79,7 +79,7 @@
         <i class="fa-solid fa-cube text-green-500 text-2xl"></i>
         <h1 class="text-xl font-bold tracking-wider">暇じゃない暇人のマイクラサーバー（仮）</h1>
       </div>
-      <button onclick="openDiscordModal()" class="text-gray-400 hover:text-[#5865F2] transition-colors" title="Discordに参加">
+      <button id="headerDiscordBtn" onclick="openDiscordModal()" class="hidden text-gray-400 hover:text-[#5865F2] transition-colors" title="Discordに参加">
         <i class="fa-brands fa-discord text-2xl"></i>
       </button>
     </div>
@@ -130,7 +130,7 @@
       </div>
 
       <!-- Discord案内 -->
-      <div class="bg-gray-900/50 border border-[#5865F2]/30 rounded-xl p-5 mb-4 max-w-md mx-auto shadow-inner">
+      <div id="discordArea" class="hidden bg-gray-900/50 border border-[#5865F2]/30 rounded-xl p-5 mb-4 max-w-md mx-auto shadow-inner">
         <p class="text-sm text-gray-300 mb-3 font-bold"><i class="fa-solid fa-circle-info text-[#5865F2] mr-1"></i> Discordに参加（推奨）</p>
         <button onclick="openDiscordModal()" class="w-full justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-8 rounded-lg shadow-[0_4px_0_#4752C4] active:shadow-[0_0px_0_#4752C4] active:translate-y-1 transition-all flex items-center gap-3">
           <i class="fa-brands fa-discord text-2xl"></i>
@@ -253,7 +253,7 @@
       <div class="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-3">
         <p class="text-xs text-gray-400 font-bold uppercase">参加URL</p>
         <div class="flex items-center justify-between gap-2">
-          <a id="discordUrlText" href="https://discord.gg/zYA86R6ewj" target="_blank" rel="noopener noreferrer" class="text-[#5865F2] hover:text-[#4752C4] truncate font-mono">https://discord.gg/zYA86R6ewj</a>
+          <a id="discordUrlText" href="#" target="_blank" rel="noopener noreferrer" class="text-[#5865F2] hover:text-[#4752C4] truncate font-mono">※認証後に表示されます</a>
           <button onclick="copyDiscordUrl()" id="copyDiscordBtn" class="bg-gray-700 text-white px-3 py-1 rounded text-sm">コピー</button>
         </div>
       </div>
@@ -292,6 +292,17 @@
         if(data.success) {
           document.getElementById('addressText').innerText = data.address;
           document.getElementById('resultArea').classList.remove('hidden');
+          
+          // 認証成功時にDiscordエリアを表示し、URLをセットする
+          document.getElementById('discordArea').classList.remove('hidden');
+          document.getElementById('headerDiscordBtn').classList.remove('hidden');
+          
+          // サーバー（Worker）から安全に受け取ったDiscord URLを使用
+          // HTML/JSのソースコード上からは完全にURLが消滅しました
+          const discordUrl = data.discordUrl;
+          const discordLinkEl = document.getElementById('discordUrlText');
+          discordLinkEl.href = discordUrl;
+          discordLinkEl.innerText = discordUrl;
         } else {
           showError("認証に失敗しました。");
         }
@@ -301,6 +312,14 @@
         if (location.protocol === 'data:' || location.hostname === 'localhost') {
           document.getElementById('addressText').innerText = "play.example-server.com";
           document.getElementById('resultArea').classList.remove('hidden');
+          
+          // ローカルテスト用: Discord表示
+          document.getElementById('discordArea').classList.remove('hidden');
+          document.getElementById('headerDiscordBtn').classList.remove('hidden');
+          const discordUrl = "https://discord.gg/dummy-local-test";
+          const discordLinkEl = document.getElementById('discordUrlText');
+          discordLinkEl.href = discordUrl;
+          discordLinkEl.innerText = discordUrl;
         } else {
           showError("通信エラーが発生しました。");
         }
@@ -343,7 +362,10 @@
     }
 
     function copyDiscordUrl() {
-      navigator.clipboard.writeText("https://discord.gg/zYA86R6ewj").then(() => {
+      const url = document.getElementById('discordUrlText').innerText;
+      if(url === "※認証後に表示されます") return; // 念のためのチェック
+      
+      navigator.clipboard.writeText(url).then(() => {
         const btn = document.getElementById('copyDiscordBtn');
         btn.innerText = "完了！";
         setTimeout(() => btn.innerText = "コピー", 2000);
