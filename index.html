@@ -34,9 +34,17 @@
   <style>
     body {
       font-family: 'Noto Sans JP', sans-serif;
-      background-color: #111827; 
-      background-image: radial-gradient(#374151 1px, transparent 1px);
-      background-size: 20px 20px;
+      
+      /* ▼▼▼ 背景画像の設定 ▼▼▼ */
+      background-image: 
+        /* 文字を読みやすくするために、画像の上に重ねる暗いグラデーションフィルター */
+        linear-gradient(to bottom, rgba(17, 24, 39, 0.75), rgba(17, 24, 39, 0.95)),
+        /* 背景画像本体（ここをご自身のスクリーンショットのファイル名に変更してください） */
+        url('./screenshot.png');
+      
+      background-size: cover;          /* 画面いっぱいに広げる */
+      background-position: center;       /* 画像の中央を表示する */
+      background-attachment: fixed;      /* スクロールしても背景を固定する */
     }
     
     .minecraft-btn {
@@ -200,7 +208,7 @@
     </section>
 
     <!-- サーバー情報 -->
-    <div class="grid md:grid-cols-2 gap-8">
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
       <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-6">
         <h3 class="text-xl font-bold mb-4 flex items-center border-b border-gray-700 pb-2">
           <i class="fa-solid fa-star text-yellow-500 mr-2"></i> サーバーの特徴
@@ -226,7 +234,7 @@
       </section>
       <section class="bg-gray-800/80 border border-gray-700 rounded-xl p-6">
         <h3 class="text-xl font-bold mb-4 flex items-center border-b border-gray-700 pb-2">
-          <i class="fa-solid fa-ban text-red-400 mr-2"></i> 禁止事項
+          <i class="fa-solid fa-ban text-red-400 mr-2"></i> 基本の禁止事項
         </h3>
         <ul class="space-y-3 text-gray-300">
           <li class="flex items-start">
@@ -252,7 +260,7 @@
         </ul>
       </section>
     </div>
-  </main>
+
 
   <!-- Discordポップアップ -->
   <div id="discordModal" onclick="if(event.target === this) closeDiscordModal()" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center backdrop-blur-sm modal-overlay opacity-0 cursor-pointer">
@@ -307,16 +315,14 @@
         if(data.success) {
           document.getElementById('addressText').innerText = data.address;
           
-          // 結果エリアを表示し、アニメーションクラスを追加
           const resultArea = document.getElementById('resultArea');
           resultArea.classList.remove('hidden');
           resultArea.classList.add('animate-fade-in-up');
           
-          // Discordエリアを表示し、少し遅れてアニメーション
           const discordArea = document.getElementById('discordArea');
           discordArea.classList.remove('hidden');
           discordArea.classList.add('animate-fade-in-up');
-          discordArea.style.animationDelay = '0.15s'; // 少し遅延させる
+          discordArea.style.animationDelay = '0.15s';
           
           const headerDiscordBtn = document.getElementById('headerDiscordBtn');
           headerDiscordBtn.classList.remove('hidden');
@@ -395,7 +401,7 @@
 
     function copyDiscordUrl() {
       const url = document.getElementById('discordUrlText').innerText;
-      if(url === "※認証後に表示されます") return; // 念のためのチェック
+      if(url === "※認証後に表示されます") return;
       
       navigator.clipboard.writeText(url).then(() => {
         const btn = document.getElementById('copyDiscordBtn');
